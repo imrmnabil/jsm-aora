@@ -6,6 +6,8 @@ import { images } from "../../constants";
 import FormField from "../../components/form-field";
 import CustomButton from "../../components/custom-button";
 import { signIn } from "../../lib/appwrite";
+import { router } from "expo-router";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -13,22 +15,29 @@ const SignIn = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setIsLoggedIn, setUser, user , setCurrentUser} = useGlobalContext();
 
-  const submit = async ()=> {
-    if(!(form.email && form.password)) {
-      Alert.alert('Error' , 'Please type all the fields!');
+  const submit = async () => {
+    if (!(form.email && form.password)) {
+      Alert.alert("Error", "Please type all the fields!");
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
-      await signIn(form.email, form.password)
-      //set it to global state...
-      router.replace('/home')
+      await signIn(form.email, form.password);
+      try {
+        setCurrentUser()
+      } catch (error) {
+        Alert.alert("Error", error.message);
+      }
+      router.replace("/home");
     } catch (error) {
-      Alert.alert('Error', error.message)
+      Alert.alert("Error", error.message);
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>

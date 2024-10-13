@@ -11,7 +11,7 @@ const GlobalProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect (()=>{
+    const setCurrentUser=()=> {
         getCurrentUser()
         .then((res)=> {
             if(res) {
@@ -28,7 +28,12 @@ const GlobalProvider = ({children}) => {
         })
         .finally(()=>{
             setIsLoading(false)
+            console.log("Setting current user succesfull");
         })
+    }
+
+    useEffect (()=>{
+        setCurrentUser();
     },[])
     return (
         <GlobalContext.Provider
@@ -37,7 +42,8 @@ const GlobalProvider = ({children}) => {
                 setIsLoggedIn,
                 user,
                 setUser,
-                isLoading
+                isLoading,
+                setCurrentUser
             }}
         >
             {children}
