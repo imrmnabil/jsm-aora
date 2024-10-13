@@ -2,6 +2,8 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { icons } from "../constants";
 
+import { Video, ResizeMode } from "expo-av";
+
 const VideoCard = ({
   video: {
     title,
@@ -34,7 +36,21 @@ const VideoCard = ({
         </View>
       </View>
       {play ? (
-        <Text>Playing</Text>
+        <Video 
+        className="w-full h-60 rounded-xl mt-3 relative justify-center items-center bg-white/10"
+        source={{uri: video}}
+        resizeMode={ResizeMode.COVER}
+        shouldPlay
+        isMuted
+        useNativeControls
+        onError={(error)=>{
+          setPlay(false)
+        }}
+        onPlaybackStatusUpdate={(status)=>{
+          if(status.didJustFinish) {
+            setPlay(false)
+          }
+        }}/>
       ) : (
         <TouchableOpacity
           className="w-full h-60 rounded-xl mt-3 relative justify-center items-center"
